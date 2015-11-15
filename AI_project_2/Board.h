@@ -26,14 +26,18 @@ public:
 	int materialCount();//Positive for white has more material.
 	int weightedCount();//Our heuristic. Could be based on material count and other factors
 	std::vector<Move> getLegal();//Returns a vector of all legal moves.
+	content getSquare(int file, int rank){return squares[file][rank];}
+	bool isMated();//Returns true if the king whose turn it is to move is in checkmate.
 	Board(void);//Creates board at initial position
 	~Board(void);
 private:
 	bool isLegal(Move m);//Whether the move is legal
+	bool isCheck(int file, int rank);//Returns true if the player whose move it is would be in check if the player was on the given square.
+	bool isCheck();//Returns true if the player whose move it is, is currently in check.
 	content squares[NUM_FILES][NUM_RANKS];//An array of the contents in each square. (0,0) is a1, (7,0) is h1, (0,7) is a8, etc
 	bool whiteKingMoved;//We keep track of whether the kings have moved, so that we know if they can castle
 	bool blackKingMoved;
 	bool whiteToMove;//True if it is white's turn
-	Move* last;//For en passant.
+	Move last;//For en passant.
 };
 

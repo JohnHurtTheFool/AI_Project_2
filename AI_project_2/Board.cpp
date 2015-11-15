@@ -6,7 +6,7 @@ Board::Board(void)
 	Move::square A1 = {0,0};
 	whiteKingMoved = false;
 	blackKingMoved = false;
-	last = new Move(A1,A1);
+	last = Move(A1,A1);
 
 	//all the empty squares
 	content empty = {true,true,P};
@@ -16,11 +16,11 @@ Board::Board(void)
 
 	//Pawns
 	content whitePawn = {false,true,P};
-	content blackPawn = {false,true,P};
+	content blackPawn = {false,false,P};
 	for(int i = 0; i < NUM_FILES; i++)
-			squares[i][2] = whitePawn;
+			squares[i][1] = whitePawn;
 	for(int i = 0; i < NUM_FILES; i++)
-			squares[i][7] = blackPawn;
+			squares[i][NUM_RANKS-2] = blackPawn;
 	//Back ranks.
 	content a1 = {false,true,R};
 	content b1 = {false,true,N};
@@ -46,35 +46,62 @@ Board::Board(void)
 	squares[5][0]= f1;
 	squares[6][0]= g1;
 	squares[7][0]= h1;
-	squares[0][0]= a1;
-	squares[1][7]= b8;
-	squares[2][7]= c8;
-	squares[3][7]= d8;
-	squares[4][7]= e8;
-	squares[5][7]= f8;
-	squares[6][7]= g8;
-	squares[7][7]= h8;
+	squares[0][NUM_RANKS-1]= a8;
+	squares[1][NUM_RANKS-1]= b8;
+	squares[2][NUM_RANKS-1]= c8;
+	squares[3][NUM_RANKS-1]= d8;
+	squares[4][NUM_RANKS-1]= e8;
+	squares[5][NUM_RANKS-1]= f8;
+	squares[6][NUM_RANKS-1]= g8;
+	squares[7][NUM_RANKS-1]= h8;
 }
 
 
 Board::~Board(void)
 {
-	if(last)
-		delete last;
 }
 bool Board::isLegal(Move m)
 {
 	//Please add me.
 	return true;//Placeholder
 }
-Board Board::result (Move m)
+bool Board::isMated()
 {
 	//Please add me.
-	return *this;//Placeholder
+	return true;//Placeholder
+}
+Board Board::result (Move m)
+{
+	Board b = *this;
+	if( squares[m.getFrom().file][m.getFrom().rank].piece == K && (abs(m.getTo().rank-m.getFrom().rank) == 2) )//If castling
+	{
+		if(squares[m.getFrom().file][m.getFrom().rank].white)//If king is moving, it can no longer castle.
+			b.whiteKingMoved = true;
+		else
+			b.blackKingMoved = true;
+		//Please add the rest of me.
+	}
+	else if(false)//Please add condition and code for en passant
+	{
+	}
+	else
+	{
+		if(squares[m.getFrom().file][m.getFrom().rank].piece == K)//If king is moving, it can no longer castle.
+		{
+			if(squares[m.getFrom().file][m.getFrom().rank].white)
+				b.whiteKingMoved = true;
+			else
+				b.blackKingMoved = true;
+		}
+
+		b.squares[m.getTo().file][m.getTo().rank]=squares[m.getFrom().file][m.getFrom().rank];
+	}
+	last = m;
+	return b;//Placeholder
 }
 int Board::materialCount()
 {
-	int score;
+	double score = 0;
 	for(int i = 0; i < NUM_FILES; i++)
 		for(int j = 0; j < NUM_RANKS; j++)
 			if(!squares[i][j].empty)//If there is a piece.
@@ -118,4 +145,14 @@ std::vector<Move> Board::getLegal()
 	vector<Move> legal;
 	//Please add me
 	return legal;
+}
+bool Board::isCheck()
+{
+	//Please add me
+	return true;//Placeholder
+}
+bool Board::isCheck(int file, int rank)
+{
+	//Please add me
+	return true;//Placeholder
 }
