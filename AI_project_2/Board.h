@@ -33,6 +33,7 @@ private:
 	content squares[NUM_FILES][NUM_RANKS];//An array of the contents in each square. (0,0) is a1, (7,0) is h1, (0,7) is a8, etc
 	bool whiteKingMoved;//We keep track of whether the kings have moved, so that we know if they can castle
 	bool blackKingMoved;
+	bool whiteToMove;//True if it is white's turn
 	Move* last;//For en passant.
 };
 
