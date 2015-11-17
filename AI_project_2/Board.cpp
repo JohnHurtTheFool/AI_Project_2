@@ -175,9 +175,22 @@ std::vector<Move> Board::getLegal()
 }
 bool Board::isCheck()
 {
-	/*for(int i = 0; i < NUM_FILES; i++)
+	for(int i = 0; i < NUM_FILES; i++)
 		for(int j = 0; j < NUM_RANKS; j++)
-			if(whiteToMove)*/
+			if(whiteToMove)
+			{
+				if(squares[i][j].empty==false && squares[i][j].piece==K  && squares[i][j].white)//If is white's turn, and the white king is at this square.
+				{
+					return isCheck(i,j);//Return whether there is a check at the square where the king is.
+				}
+			}
+			else
+			{
+				if(squares[i][j].empty==false && squares[i][j].piece==K  && !squares[i][j].white)//If is black's turn, and the black king is at this square.
+				{
+					return isCheck(i,j);//Return whether there is a check at the square where the king is.
+				}
+			}
 
 	return true;//Placeholder
 }
