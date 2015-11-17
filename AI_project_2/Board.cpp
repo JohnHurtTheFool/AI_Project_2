@@ -121,6 +121,7 @@ Board Board::result (Move m)
 		}
 
 		b.squares[m.getTo().file][m.getTo().rank]=squares[m.getFrom().file][m.getFrom().rank];
+		b.squares[m.getFrom().file][m.getFrom().rank].empty = true;
 	}
 	last = m;
 	return b;//Placeholder
@@ -174,7 +175,10 @@ std::vector<Move> Board::getLegal()
 }
 bool Board::isCheck()
 {
-	//Please add me
+	/*for(int i = 0; i < NUM_FILES; i++)
+		for(int j = 0; j < NUM_RANKS; j++)
+			if(whiteToMove)*/
+
 	return true;//Placeholder
 }
 bool Board::isCheck(int file, int rank)

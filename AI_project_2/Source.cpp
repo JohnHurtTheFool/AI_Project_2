@@ -1,14 +1,24 @@
 #include <iostream>
+#include <string>
 #include "Move.h"
 #include "Board.h"
 using std::cout;
+using std::cin;
 void printBoard(Board& b);
 int main()
 {
-	Move::square s={4,4};//Test code.
-	Move::square s2={3,5};
+	std::string moveDescription;
+	Move::square s={0,0};//Test code.
+	Move::square s2={0,0};
+	cin >> moveDescription;
+	Move::square s3 = {moveDescription[0]-48,(int)moveDescription[1]-48};
+	Move::square s4 = {moveDescription[2]-48,(int)moveDescription[3]-48};
 	Move m(s,s2);
+	Move m2(s3,s4);
 	Board b;
+	printBoard(b);
+	b = b.result(m2);
+	cout << "\n";
 	printBoard(b);
 	cout << "\n" << b.materialCount();
 	return 0;
