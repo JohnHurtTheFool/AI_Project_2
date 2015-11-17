@@ -62,8 +62,10 @@ Board::~Board(void)
 }
 bool Board::isLegal(Move m)
 {
-	//Please add me.
-	return true;//Placeholder
+	int file = m.getTo().file;
+	int rank = m.getTo().rank;
+	if (squares[file][rank].empty) return true;
+	else return false;
 }
 bool Board::isMated()
 {
@@ -80,6 +82,30 @@ Board Board::result (Move m)
 		else
 			b.blackKingMoved = true;
 		//Please add the rest of me.
+		if (squares[m.getTo().file][m.getTo().rank + 1].piece == R) {
+			// If the rook is in the correct position
+			//squares[m.getTo().file][m.getTo().rank + 1].piece = ;	// Not sure how to clear a square's piece
+			squares[m.getTo().file][m.getTo().rank + 1].empty = true;
+			//squares[m.getFrom().file][m.getFrom().rank].piece = ;	// Same ^
+			squares[m.getFrom().file][m.getFrom().rank].empty = true;
+
+			// Moves the King to the left 2 spaces
+			squares[m.getFrom().file][m.getFrom().rank + 1].piece = R;
+			squares[m.getFrom().file][m.getFrom().rank + 1].empty = false;
+			if (b.whiteKingMoved)
+				squares[m.getFrom().file][m.getFrom().rank].white = true;
+			else
+				squares[m.getFrom().file][m.getFrom().rank].white = false;
+			
+			// Moves the Rook to the right 2 spaces
+			squares[m.getTo().file][m.getTo().rank - 1].piece = K;
+			squares[m.getTo().file][m.getTo().rank - 1].empty = false;
+			if (b.whiteKingMoved)
+				squares[m.getTo().file][m.getTo().rank - 1].white = true;
+			else
+				squares[m.getTo().file][m.getTo().rank - 1].white = false;
+
+		}
 	}
 	else if(false)//Please add condition and code for en passant
 	{
