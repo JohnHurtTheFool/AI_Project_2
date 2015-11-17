@@ -17,7 +17,8 @@ int main()
 	Move m2(s3,s4);
 	Board b;
 	printBoard(b);
-	b = b.result(m2);
+	if(b.result(m2).isLegal(m2))
+		b = b.result(m2);
 	cout << "\n";
 	printBoard(b);
 	cout << "\n" << b.materialCount();

@@ -6,6 +6,7 @@ Board::Board(void)
 	Move::square A1 = {0,0};
 	whiteKingMoved = false;
 	blackKingMoved = false;
+	whiteToMove = true;
 	last = Move(A1,A1);
 
 	//all the empty squares
@@ -62,10 +63,19 @@ Board::~Board(void)
 }
 bool Board::isLegal(Move m)
 {
+	/*
 	int file = m.getTo().file;
 	int rank = m.getTo().rank;
 	if (squares[file][rank].empty) return true;
 	else return false;
+	*/
+	Board b = result(m);
+	b.whiteToMove =  !b.whiteToMove;//We want to check if the player who just moved is in check, not the one whose turn it is
+	if(result(m).isCheck())//If true, the player moved into check so move is not legal
+		return false;
+	//Not finished.
+	return true;
+
 }
 bool Board::isMated()
 {
@@ -75,6 +85,7 @@ bool Board::isMated()
 Board Board::result (Move m)
 {
 	Board b = *this;
+	whiteToMove=!whiteToMove;//Switch whose turn it is.
 	if( squares[m.getFrom().file][m.getFrom().rank].piece == K && (abs(m.getTo().rank-m.getFrom().rank) == 2) )//If castling
 	{
 		if(squares[m.getFrom().file][m.getFrom().rank].white)//If king is moving, it can no longer castle.
@@ -196,6 +207,34 @@ bool Board::isCheck()
 }
 bool Board::isCheck(int file, int rank)
 {
-	//Please add me
-	return true;//Placeholder
+	//Check for rooks/queens attacking from the left
+	for(int i = file; i > 0; i++)
+		if(!squares[i][rank].empty && (!(squares[i][rank].piece == R  || squares[i][rank].piece == Q) || squares[i][rank].white==whiteToMove))//If there is a piece here other than an enemy rook or queen, then no rook or queen on the other side of it could check the king.
+			break;
+		else if(!squares[i][rank].empty && !(!(squares[i][rank].piece == R  || squares[i][rank].piece == Q) || squares[i][rank].white==whiteToMove))
+			return true;
+	//Check for rooks/queens attacking from the right
+	for(int i = file; i > 0; i++)
+		if(!squares[i][rank].empty && (!(squares[i][rank].piece == R  || squares[i][rank].piece == Q) || squares[i][rank].white==whiteToMove))//If there is a piece here other than an enemy rook or queen, then no rook or queen on the other side of it could check the king.
+			break;
+		else if(!squares[i][rank].empty && !(!(squares[i][rank].piece == R  || squares[i][rank].piece == Q) || squares[i][rank].white==whiteToMove))
+			return true;
+	//Check for rooks/queens attacking from the above
+		//Add me.
+	//Check for rooks/queens attacking from the below
+		//Add me.
+	//Check for Bishops/queens attacking from the right and up
+		//Add me.
+	//Check for Bishops/queens attacking from the left and up
+		//Add me.
+	//Check for Bishops/queens attacking from the right and down
+		//Add me.
+	//Check for Bishops/queens attacking from the left and down
+		//Add me.
+	//Check for Knights attacking
+		//Add me.
+	//Check for pawns attacking
+		//Add me.
+	//Not finished.
+	return false;//Placeholder
 }

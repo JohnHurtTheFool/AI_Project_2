@@ -30,8 +30,8 @@ public:
 	bool isMated();//Returns true if the king whose turn it is to move is in checkmate.
 	Board(void);//Creates board at initial position
 	~Board(void);
-private:
 	bool isLegal(Move m);//Whether the move is legal
+private:
 	bool isCheck(int file, int rank);//Returns true if the player whose move it is would be in check if the player was on the given square.
 	bool isCheck();//Returns true if the player whose move it is, is currently in check.
 	content squares[NUM_FILES][NUM_RANKS];//An array of the contents in each square. (0,0) is a1, (7,0) is h1, (0,7) is a8, etc
