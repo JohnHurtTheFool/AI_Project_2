@@ -67,6 +67,7 @@ public class gameScript : MonoBehaviour {
 		squareWidth = boardObject.GetComponent<RectTransform> ().rect.width / 8.0f;
 		squareHeight = boardObject.GetComponent<RectTransform> ().rect.height / 8.0f;
 	}
+
 	bool hasPiece(int x, int y){
 		return true;
 	}
@@ -86,6 +87,8 @@ public class gameScript : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		
+		foreach (Transform child in transform) {
+			GameObject.Destroy(child.gameObject);
+		}
 	}
 }
