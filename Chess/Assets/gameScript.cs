@@ -58,6 +58,10 @@ public class gameScript : MonoBehaviour {
 	}
 	public bool isWhitesTurn;
 	public GameObject boardObject;
+
+	public GameObject wPawn, wRook, wKnight, wBishop, wKing, wQueen,
+	bPawn, bKnight, bBishop, bRook, bQueen, bKing; 
+
 	Board board = new Board();
 	float squareWidth;
 	float squareHeight;
@@ -89,6 +93,73 @@ public class gameScript : MonoBehaviour {
 	void Update () {
 		foreach (Transform child in transform) {
 			GameObject.Destroy(child.gameObject);
+		}
+		for (int a = 0; a < 8; a++){
+			for (int b = 0; b < 8; b ++){
+				switch(board.gameBoard[a,b]){
+					case pieces.bBISHOP:
+						GameObject bb = Instantiate(bBishop, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						bb.transform.parent = boardObject.transform;
+						break;
+					case pieces.bPAWN:
+						GameObject bp = Instantiate(bPawn, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						bp.transform.parent = boardObject.transform;
+						break;
+					case pieces.bKING:
+						GameObject bk = Instantiate(bKing, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						bk.transform.parent = boardObject.transform;
+						break;
+					case pieces.bROOK:
+						GameObject br = Instantiate(bRook, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						br.transform.parent = boardObject.transform;
+						break;
+					case pieces.bQUEEN:
+						GameObject bq = Instantiate(bQueen, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						bq.transform.parent = boardObject.transform;
+						break;
+					case pieces.bKNIGHT:
+						GameObject bkn = Instantiate(bKnight, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						bkn.transform.parent = boardObject.transform;
+						break;
+					case pieces.wBISHOP:
+						GameObject wb = Instantiate(wBishop, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						wb.transform.parent = boardObject.transform;
+						break;
+					case pieces.wPAWN:
+						GameObject wp = Instantiate(wPawn, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						wp.transform.parent = boardObject.transform;
+						break;
+					case pieces.wKING:
+						GameObject wk = Instantiate(wKing, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						wk.transform.parent = boardObject.transform;
+						break;
+					case pieces.wROOK:
+						GameObject wr = Instantiate(wRook, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						wr.transform.parent = boardObject.transform;
+						break;
+					case pieces.wQUEEN:
+						GameObject wq = Instantiate(wQueen, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						wq.transform.parent = boardObject.transform;
+						break;
+					case pieces.wKNIGHT:
+						GameObject wkn = Instantiate(wKnight, new Vector3(a * squareWidth + boardObject.transform.position.x - (squareWidth * 4) + 16.5f, 
+					                                               b * squareHeight + 20.0f, 1.0f) ,Quaternion.identity) as GameObject; 
+						wkn.transform.parent = boardObject.transform;
+						break;
+				}
+				                           
+			}
 		}
 	}
 }
