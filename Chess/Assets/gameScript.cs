@@ -5,6 +5,8 @@ public enum pieces{wPAWN, wKNIGHT, wBISHOP, wROOK, wQUEEN, wKING,
 public class gameScript : MonoBehaviour {
 	public class Board
 	{
+		public int selectedX, selectedY;
+		public bool selected = false;
 		public pieces[,] gameBoard = new pieces[8,8];
 		public Board(){
 			for(int a = 0; a < 8; a++){
@@ -73,7 +75,11 @@ public class gameScript : MonoBehaviour {
 	}
 
 	bool hasPiece(int x, int y){
-		return true;
+		if (board.gameBoard [x, y] != pieces.EMPTY) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	void testBoard(int x, int y){
 		Debug.Log ("This piece is a: " + ((pieces)board.gameBoard[x,y]).ToString());
@@ -84,9 +90,20 @@ public class gameScript : MonoBehaviour {
 			                    + Input.mousePosition.x - boardObject.transform.position.x))/ squareWidth);
 			int y = (int)((boardObject.GetComponent<RectTransform>().rect.height/2
 			                   + Input.mousePosition.y - boardObject.transform.position.y)/squareHeight);
-			testBoard(x, y);
-			//Debug.Log ("Board Width " + board.GetComponent<RectTransform>().rect.width +
-			           //"Board Height " + board.GetComponent<RectTransform>().rect.height);
+
+			if(!board.selected){
+				if(hasPiece(x,y)){
+					board.selectedX = x;
+					board.selectedY = y;
+					board.selected = true;
+				}
+			}
+			else{
+				board.gameBoard[x, y] = board.gameBoard[board.selectedX, board.selectedY];
+				board.gameBoard[board.selectedX, board.selectedY] = pieces.EMPTY;
+				board.selected = false;
+			}
+
 		}
 	}
 	// Update is called once per frame
