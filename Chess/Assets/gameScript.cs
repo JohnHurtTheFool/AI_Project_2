@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 //Enum to represent the pieces
 public enum pieces{wPAWN, wKNIGHT, wBISHOP, wROOK, wQUEEN, wKING, 
 	bPAWN, bKNIGHT, bBISHOP, bROOK, bQUEEN, bKING, EMPTY};
+
 public class Board
 {
+	public int xcoord; 
+	public int ycoord; 
 	//helps handle the X and Y value of the currently selected piece.
 	public int selectedX, selectedY;
 	//whether or not there is currently a piece selected.
@@ -284,10 +288,14 @@ public class gameScript : MonoBehaviour {
 			else if(!isLegal(board.gameBoard[board.selectedX, board.selectedY], board.selectedX, board.selectedY, x, y)){
 				board.selected = false;
 			}
+			//Legal move, turn is taken.
 			else{
 				board.gameBoard[x, y] = board.gameBoard[board.selectedX, board.selectedY];
 				board.gameBoard[board.selectedX, board.selectedY] = pieces.EMPTY;
+				board.xcoord = x;
+				board.ycoord = y;
 				board.selected = false;
+				isWhitesTurn = false;
 			}
 		}
 	}
@@ -296,6 +304,8 @@ public class gameScript : MonoBehaviour {
 		foreach (Transform child in transform) {
 			GameObject.Destroy(child.gameObject);
 		}
+
+		NetworkView networkView = GetComponent<NetworkView>();
 		Color blackInstance = black;
 		Color whiteInstance = white;
 		for (int a = 0; a < 8; a++){
@@ -396,6 +406,47 @@ public class gameScript : MonoBehaviour {
 				}
 				                           
 			}
+		}
+	}
+	void OnSerializeNetworkView (BitStream stream, NetworkMessageInfo info){
+		Board sendBoard = board;
+		bool sendTurn = isWhitesTurn; 
+		try
+		{
+			if (stream.isWriting)
+			{
+
+				stream.Serialize(ref sendBoard.selectedX);
+				stream.Serialize(ref sendBoard.selectedY);
+				stream.Serialize(ref sendBoard.xcoord);
+				stream.Serialize(ref sendBoard.ycoord);
+				sendTurn = isWhitesTurn;
+				stream.Serialize (ref sendTurn);
+			}
+			else
+			{
+				stream.Serialize(ref sendBoard.selectedX);
+				board.selectedX = sendBoard.selectedX;
+				stream.Serialize(ref sendBoard.selectedY);
+				board.selectedY = sendBoard.selectedY;
+				stream.Serialize(ref sendBoard.xcoord);
+				board.xcoord = sendBoard.xcoord;
+				stream.Serialize(ref sendBoard.ycoord);
+				board.ycoord = sendBoard.ycoord;
+				stream.Serialize (ref sendTurn);
+				isWhitesTurn = sendTurn;
+
+				board.gameBoard[board.xcoord, board.ycoord] = board.gameBoard[board.selectedX, board.selectedY];
+				board.gameBoard[board.selectedX, board.selectedY] = pieces.EMPTY;
+
+
+
+			}
+		}
+		catch (Exception e)
+		{
+			return;
+			Debug.Log(e);
 		}
 	}
 }
