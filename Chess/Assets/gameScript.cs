@@ -1,13 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+//Enum to represent the pieces
 public enum pieces{wPAWN, wKNIGHT, wBISHOP, wROOK, wQUEEN, wKING, 
 	bPAWN, bKNIGHT, bBISHOP, bROOK, bQUEEN, bKING, EMPTY};
 public class gameScript : MonoBehaviour {
 	public class Board
 	{
+		//helps handle the X and Y value of the currently selected piece.
 		public int selectedX, selectedY;
+		//whether or not there is currently a piece selected.
 		public bool selected = false;
+		//the actual board that holds all the pieces' positions
 		public pieces[,] gameBoard = new pieces[8,8];
+		//Constructor to initialize the gameBoard
 		public Board(){
 			for(int a = 0; a < 8; a++){
 				for (int b= 0; b< 8; b++){
@@ -59,8 +64,9 @@ public class gameScript : MonoBehaviour {
 		}
 	}
 	public bool isWhitesTurn;
+	//This is basically a reference to the image and is not used in chess logic.
 	public GameObject boardObject;
-
+	//Again, more Unity stuff. Not required for 
 	public GameObject wPawn, wRook, wKnight, wBishop, wKing, wQueen,
 	bPawn, bKnight, bBishop, bRook, bQueen, bKing; 
 
@@ -79,6 +85,82 @@ public class gameScript : MonoBehaviour {
 			return true;
 		} else {
 			return false;
+		}
+	}
+	bool checkKnight(int startX, int startY, int endX, int endY){
+		if (startX - endX == 1 || startX - endX == -1) {
+			if (startY - endY == 2 || startY - endY == -2) {
+				return true;
+			}
+		} else if (startX - endX == 2 || startX - endX == -2) {
+			if (startY - endY == 1 || startY - endY == -1) {
+				return true;
+			}
+		} else {
+			return false;
+		}
+
+	}
+	int abs(int val){
+		if (val < 0) {
+			return -val;
+		}
+		return val;
+	}
+	bool checkBishop(int startX, int startY, int endX, int endY){
+		//This makes sure that whatever square was clicked
+		//is in fact diagonal from the bishop's position.
+		if (abs(startX - endX) != abs(startY - endY)) 
+		{
+			return false;
+		}
+		int iterX = startX;
+		int iterY = startY;
+		while (iterX != endX && iterY != endY) {
+			if(startX > endX){
+				iterX--;
+			}
+			else{
+				iterX++;
+			}
+			if(startY > endY){
+				iterY--;
+			}
+			else{
+				iterY++;
+			}
+			if(board.gameBoard[startX,startY] != pieces.EMPTY){
+				return false;
+			}
+		}
+		return true;
+			
+	}
+	bool checkRook(int startX, int startY, int endX, int endY){
+
+	}
+	bool checkQueen(int startX, int startY, int endX, int endY){
+
+	}
+	bool checkKing(int startX, int startY, int endX, int endY){
+
+	}
+	bool isLegal(pieces piece, int startX, int startY, int endX, int endY){
+		switch (piece) {
+			case pieces.bBISHOP || pieces.wBISHOP:
+				return checkBishop(startX, startY, endX, endY);
+				break;
+			case pieces.bKNIGHT || pieces.wKNIGHT:
+				return checkKnight(startX, startY, endX, endY);
+				break;
+			case pieces.bROOK || pieces.wROOK:
+				break;
+			case pieces.bPAWN || pieces.wPAWN:
+				break;
+			case pieces.bQUEEN || pieces.wQUEEN:
+				break;
+			case pieces.bKING || pieces.wKING:
+				break;
 		}
 	}
 	void testBoard(int x, int y){
