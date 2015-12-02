@@ -1,15 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using System;
 //Enum to represent the pieces
 public enum pieces{wPAWN, wKNIGHT, wBISHOP, wROOK, wQUEEN, wKING, 
 	bPAWN, bKNIGHT, bBISHOP, bROOK, bQUEEN, bKING, EMPTY};
-
 public class Board
 {
-	public int xcoord; 
-	public int ycoord; 
+
+
+
+    public bool isBlack(int x, int y)
+    {
+        pieces piece = gameBoard[x, y];
+        if (piece == pieces.bKING || piece == pieces.bKNIGHT || piece == pieces.bBISHOP || piece == pieces.bPAWN || piece == pieces.bQUEEN || piece == pieces.bROOK)
+        {
+            return true;
+        }
+        return false;
+    }
 	//helps handle the X and Y value of the currently selected piece.
 	public int selectedX, selectedY;
 	//whether or not there is currently a piece selected.
@@ -76,7 +84,7 @@ public class gameScript : MonoBehaviour {
 	public GameObject wPawn, wRook, wKnight, wBishop, wKing, wQueen,
 	bPawn, bKnight, bBishop, bRook, bQueen, bKing; 
 
-	Board board = new Board();
+	public Board board = new Board();
 	float squareWidth;
 	float squareHeight;
 	Color white, whiteSelected, black, blackSelected;
@@ -285,29 +293,39 @@ public class gameScript : MonoBehaviour {
 					board.selected = true;
 				}
 			}
+            //Illegal move, deselect the current piece
 			else if(!isLegal(board.gameBoard[board.selectedX, board.selectedY], board.selectedX, board.selectedY, x, y)){
 				board.selected = false;
 			}
-			//Legal move, turn is taken.
+            //Move was legal, make the move;
 			else{
 				board.gameBoard[x, y] = board.gameBoard[board.selectedX, board.selectedY];
 				board.gameBoard[board.selectedX, board.selectedY] = pieces.EMPTY;
-				board.xcoord = x;
-				board.ycoord = y;
 				board.selected = false;
-				isWhitesTurn = false;
+                isWhitesTurn = false;
 			}
 		}
 	}
+    public void AItakeTurn(Move AIMove)
+    {
+        if (isLegal(board.gameBoard[AIMove.startX, AIMove.startY], AIMove.startX, AIMove.startY, AIMove.endX, AIMove.endY) && board.isBlack(AIMove.startX, AIMove.startY))
+        {
+            board.gameBoard[AIMove.endX, AIMove.endY] = board.gameBoard[AIMove.startX, AIMove.startY];
+            board.gameBoard[AIMove.startX, AIMove.startY] = pieces.EMPTY;
+            isWhitesTurn = true;
+        }
+    }
 	// Update is called once per frame
 	void Update () {
 		foreach (Transform child in transform) {
 			GameObject.Destroy(child.gameObject);
 		}
-
-		NetworkView networkView = GetComponent<NetworkView>();
 		Color blackInstance = black;
 		Color whiteInstance = white;
+        if (!isWhitesTurn)
+        {
+            AItakeTurn(boardObject.GetComponent<AI>().myMove);
+        }
 		for (int a = 0; a < 8; a++){
 			for (int b = 0; b < 8; b ++){
 				if (a == board.selectedX && b == board.selectedY && board.selected){
@@ -406,47 +424,6 @@ public class gameScript : MonoBehaviour {
 				}
 				                           
 			}
-		}
-	}
-	void OnSerializeNetworkView (BitStream stream, NetworkMessageInfo info){
-		Board sendBoard = board;
-		bool sendTurn = isWhitesTurn; 
-		try
-		{
-			if (stream.isWriting)
-			{
-
-				stream.Serialize(ref sendBoard.selectedX);
-				stream.Serialize(ref sendBoard.selectedY);
-				stream.Serialize(ref sendBoard.xcoord);
-				stream.Serialize(ref sendBoard.ycoord);
-				sendTurn = isWhitesTurn;
-				stream.Serialize (ref sendTurn);
-			}
-			else
-			{
-				stream.Serialize(ref sendBoard.selectedX);
-				board.selectedX = sendBoard.selectedX;
-				stream.Serialize(ref sendBoard.selectedY);
-				board.selectedY = sendBoard.selectedY;
-				stream.Serialize(ref sendBoard.xcoord);
-				board.xcoord = sendBoard.xcoord;
-				stream.Serialize(ref sendBoard.ycoord);
-				board.ycoord = sendBoard.ycoord;
-				stream.Serialize (ref sendTurn);
-				isWhitesTurn = sendTurn;
-
-				board.gameBoard[board.xcoord, board.ycoord] = board.gameBoard[board.selectedX, board.selectedY];
-				board.gameBoard[board.selectedX, board.selectedY] = pieces.EMPTY;
-
-
-
-			}
-		}
-		catch (Exception e)
-		{
-			return;
-			Debug.Log(e);
 		}
 	}
 }
