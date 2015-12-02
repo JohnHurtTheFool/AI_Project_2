@@ -19,6 +19,7 @@ public class Move
 }
 class PieceInfo
 {
+	int value;
     public pieces piece;
     //pinned to King
     bool isPinned = false;
@@ -26,6 +27,21 @@ class PieceInfo
     bool isSoftPinned = false;
     public int xPos, yPos;
     public List<Move> legalMoves = new List<Move> { };
+	
+	public PieceInfo(pieces p, int x, int y){
+		piece = p;
+		xPos = x;
+		yPos = y;
+		if (piece == pieces.bBISHOP || piece == pieces.bKNIGHT || piece == pieces.wBISHOP || piece == pieces.wKNIGHT) {
+			value = 3;
+		} else if (piece == pieces.wPAWN || piece == pieces.bPAWN) {
+			value = 1;
+		} else if (piece == pieces.wROOK || piece == pieces.bROOK) {
+			value = 5;
+		} else if (piece == pieces.bQUEEN || piece == pieces.wQUEEN) {
+			value = 9;
+		}
+	}
 }
 
 
@@ -66,6 +82,12 @@ public class AI : MonoBehaviour
         return moves;
 
     }
+
+	bool minimax(Move move){
+
+
+		return false;
+	}
     List<Move> getKnightMoves(int x, int y)
     {
         List<Move> moves = new List<Move>();
@@ -242,23 +264,16 @@ public class AI : MonoBehaviour
             {
                 if (board.isBlack(a, b))
                 {
-                    PieceInfo temp = new PieceInfo();
-                    temp.piece = board.gameBoard[a, b];
-                    temp.xPos = a;
-                    temp.yPos = b;
+					PieceInfo temp = new PieceInfo(board.gameBoard[a, b], a, b);
                     myPieces.Add(temp);
                 }
                 else if (board.gameBoard[a, b] != pieces.EMPTY)
                 {
-                    PieceInfo temp = new PieceInfo();
-                    temp.piece = board.gameBoard[a, b];
-                    temp.xPos = a;
-                    temp.yPos = b;
+					PieceInfo temp = new PieceInfo(board.gameBoard[a, b], a, b);
                     theirPieces.Add(temp);
                 }
             }
         }
-
 
 		for(int a = 0; a < myPieces.Count; a++){
 			myPieces[a].legalMoves = getMoves(myPieces[a].piece, myPieces[a].xPos, myPieces[a].yPos);
@@ -267,6 +282,27 @@ public class AI : MonoBehaviour
 
 
     }
+
+	void updatePieceInfo(){
+		myPieces.Clear ();
+		theirPieces.Clear ();
+		for (int a = 0; a < 8; a++)
+		{
+			for (int b = 0; b < 8; b++)
+			{
+				if (board.isBlack(a, b))
+				{
+					PieceInfo temp = new PieceInfo(board.gameBoard[a, b], a, b);
+					myPieces.Add(temp);
+				}
+				else if (board.gameBoard[a, b] != pieces.EMPTY)
+				{
+					PieceInfo temp = new PieceInfo(board.gameBoard[a, b], a, b);
+					theirPieces.Add(temp);
+				}
+			}
+		}
+	}
 
     // Update is called once per frame
     void Update()
@@ -278,6 +314,8 @@ public class AI : MonoBehaviour
 
         if (!boardObject.GetComponent<gameScript>().isWhitesTurn)
         {
+			updatePieceInfo();
+
 			for(int a = 0; a < myPieces.Count; a++){
 				myPieces[a].legalMoves = getMoves(myPieces[a].piece, myPieces[a].xPos, myPieces[a].yPos);
 				Debug.Log (myPieces[a].legalMoves.Count);

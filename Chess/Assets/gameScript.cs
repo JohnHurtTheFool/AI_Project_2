@@ -84,6 +84,9 @@ public class gameScript : MonoBehaviour {
 	public GameObject wPawn, wRook, wKnight, wBishop, wKing, wQueen,
 	bPawn, bKnight, bBishop, bRook, bQueen, bKing; 
 
+
+	public bool blackCanCastle = true;
+	public bool whiteCanCastle = true;
 	public Board board = new Board();
 	float squareWidth;
 	float squareHeight;
@@ -247,6 +250,9 @@ public class gameScript : MonoBehaviour {
 	bool checkKing(int startX, int startY, int endX, int endY){
 		if (abs (startX - endX) <= 1 && abs (startY - endY) <= 1) {
 			return true;
+		}
+		else if(isWhite(board.gameBoard[startX, startY]){
+
 		}
 		return false;
 	}
