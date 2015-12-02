@@ -138,7 +138,7 @@ public class gameScript : MonoBehaviour {
 		if (isWhite (board.gameBoard [startX, startY])) {
 			if(endY - startY != 1){
 				//Pawn is in starting position and is pushed two
-				if(endY- startY == 2 && startY == 1 && board.gameBoard[endX, endY] == pieces.EMPTY && startX - endX == 0) {
+				if(endY- startY == 2 && startY == 1 && board.gameBoard[endX, endY] == pieces.EMPTY && board.gameBoard[endX, endY -1] == pieces.EMPTY && startX - endX == 0) {
 					return true;
 				}
 			}
@@ -160,7 +160,7 @@ public class gameScript : MonoBehaviour {
 			} else {
 			if(startY - endY != 1){
 				//Pawn is in starting position and is pushed two
-				if(startY- endY == 2 && startY == 6 && board.gameBoard[endX, endY] == pieces.EMPTY && startX-endX == 0){
+				if(startY- endY == 2 && startY == 6 && board.gameBoard[endX, endY] == pieces.EMPTY  && board.gameBoard[endX, endY + 1] == pieces.EMPTY && startX-endX == 0){
 					return true;
 				}
 			}
@@ -250,13 +250,17 @@ public class gameScript : MonoBehaviour {
 		}
 		return false;
 	}
-	bool isLegal(pieces piece, int startX, int startY, int endX, int endY){
+	public bool isLegal(pieces piece, int startX, int startY, int endX, int endY){
 		//This isn't a move. Therefore return false;
 		if (startX == endX && startY == endY) {
 			return false;
 		}
+		//not on the board
+		if (endX > 7 || endY > 7 || endX < 0 || endY < 0) {
+			return false;
+		}
 		//Can't capture own piece
-		if (isWhite(board.gameBoard [startX, startY]) == isWhite (board.gameBoard [endX, endY])) {
+		if (isWhite(board.gameBoard [startX, startY]) == isWhite (board.gameBoard [endX, endY]) && board.gameBoard [endX, endY] != pieces.EMPTY) {
 			return false;
 		}
 
