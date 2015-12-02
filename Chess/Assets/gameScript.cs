@@ -76,7 +76,7 @@ public class Board
 	}
 }
 public class gameScript : MonoBehaviour {
-	
+	public GameObject cursorThing;
 	public bool isWhitesTurn;
 	//This is basically a reference to the image and is not used in chess logic.
 	public GameObject boardObject;
@@ -138,7 +138,7 @@ public class gameScript : MonoBehaviour {
 		if (isWhite (board.gameBoard [startX, startY])) {
 			if(endY - startY != 1){
 				//Pawn is in starting position and is pushed two
-				if(endY- startY == 2 && startY == 1 && board.gameBoard[endX, endY] == pieces.EMPTY){
+				if(endY- startY == 2 && startY == 1 && board.gameBoard[endX, endY] == pieces.EMPTY && startX - endX == 0){
 					return true;
 				}
 			}
@@ -160,7 +160,7 @@ public class gameScript : MonoBehaviour {
 			} else {
 			if(startY - endY != 1){
 				//Pawn is in starting position and is pushed two
-				if(startY- endY == 2 && startY == 6 && board.gameBoard[endX, endY] == pieces.EMPTY){
+				if(startY- endY == 2 && startY == 6 && board.gameBoard[endX, endY] == pieces.EMPTY && startX-endX == 0){
 					return true;
 				}
 			}
@@ -255,7 +255,9 @@ public class gameScript : MonoBehaviour {
 		if (startX == endX && startY == endY) {
 			return false;
 		}
-
+		if (isWhite (board.gameBoard [endX, endY]) == isWhite (board.gameBoard [startX, startY])) {
+			return false;
+		}
 		if (piece == pieces.bBISHOP || piece == pieces.wBISHOP) {
 			return checkBishop (startX, startY, endX, endY);
 		} 
@@ -282,9 +284,9 @@ public class gameScript : MonoBehaviour {
 	public void takeTurn(){
 		if (isWhitesTurn) {
 			int x = (int)(((boardObject.GetComponent<RectTransform>().rect.width/2 
-			                    + Input.mousePosition.x - boardObject.transform.position.x))/ squareWidth);
+			                    + cursorThing.transform.position.x - boardObject.transform.position.x))/ squareWidth);
 			int y = (int)((boardObject.GetComponent<RectTransform>().rect.height/2
-			                   + Input.mousePosition.y - boardObject.transform.position.y)/squareHeight);
+			               + cursorThing.transform.position.y - boardObject.transform.position.y)/squareHeight);
 
 			if(!board.selected){
 				if(hasPiece(x,y)){
@@ -303,6 +305,7 @@ public class gameScript : MonoBehaviour {
 				board.gameBoard[board.selectedX, board.selectedY] = pieces.EMPTY;
 				board.selected = false;
                 isWhitesTurn = false;
+				boardObject.GetComponent<AudioSource>().Play();
 			}
 		}
 	}
