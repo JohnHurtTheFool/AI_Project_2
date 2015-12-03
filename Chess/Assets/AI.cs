@@ -84,31 +84,60 @@ public class AI : MonoBehaviour
     }
 
 	bool minimax(Move move){
-
-
-		return false;
+		Board temp = board;
+		int max = miniMaxHelper (temp, move, true, myPieces, theirPieces);
 	}
-    List<Move> getKnightMoves(int x, int y)
-    {
-        List<Move> moves = new List<Move>();
 
-        for (int endX = -2; endX <= 2; endX++)
-        {
-            for (int endY = -2; endY <= 2; endY++)
-            {
-                //speed it up by not checking bad vals;
-                if (abs(endY - endX) == 1)
-                {
-                    if (boardObject.GetComponent<gameScript>().isLegal(pieces.bKNIGHT, x, y, x + endX, y + endY))
-                    {
-                        Move move = new Move(pieces.bKNIGHT, x, y, x + endX, y + endY);
-                        moves.Add(move);
-                    }
-                }
-            }
-        }
-        return moves;
-    }
+	int miniMaxHelper(Board b, Move move, bool myTurn, List<PieceInfo> tempMyPieces, List<PieceInfo> tempTheirPieces){
+
+		//Update relevant data structures
+		b.makeMove (move);
+		tempMyPieces = getBlackPieceInfo (b);
+		tempTheirPieces = getWhitePieceInfo (b);
+
+
+		if (myTurn) {
+			int max = -10;
+			List<Move> takingMoves = new List<Move>();
+			for(int a = 0; a < tempMyPieces.Count; a++){
+				for(int c = 0; c<tempTheirPieces.Count; c++){
+					if(boardObject.GetComponent<gameScript>().isLegal(tempMyPieces[a].piece, tempMyPieces[a].xPos, tempMyPieces[a].yPos, tempTheirPieces[c].xPos, tempTheirPieces[c].yPos)){
+						Move myMove = new Move(tempMyPieces[a].piece, tempMyPieces[a].xPos, tempMyPieces[a].yPos, tempTheirPieces[c].xPos, tempTheirPieces[c].yPos);
+						takingMoves.Add(myMove);
+					}
+				}
+			}
+			while(takingMoves.Count != 0){
+				int compare = miniMaxHelper(b, takingMoves[0], false, tempMyPieces, tempTheirPieces);
+					if(compare > max){
+						max = compare;
+					}
+				takingMoves.RemoveAt(0);
+	
+			}
+			return max;
+		} 
+		else {
+			int min = 15;
+			List<Move> takingMoves = new List<Move>();
+			for(int a = 0; a < tempTheirPieces.Count; a++){
+				for(int c = 0; c<tempMyPieces.Count; c++){
+					if(boardObject.GetComponent<gameScript>().isLegal(tempTheirPieces[a].piece, tempTheirPieces[a].xPos, tempTheirPieces[a].yPos, tempMyPieces[c].xPos, tempMyPieces[c].yPos)){
+						Move myMove = new Move(tempMyPieces[a].piece, tempMyPieces[a].xPos, tempMyPieces[a].yPos, tempTheirPieces[c].xPos, tempTheirPieces[c].yPos);
+						takingMoves.Add(myMove);
+					}
+				}
+			}
+			while(takingMoves.Count != 0){
+				int compare = miniMaxHelper(b, takingMoves[0], false, tempMyPieces, tempTheirPieces);
+				if(compare < min){
+					min = compare;
+				}
+				takingMoves.RemoveAt(0);					
+			}
+			return min;
+		}
+	}
     List<Move> getBishopMoves(int x, int y)
     {
         List<Move> moves = new List<Move>();
@@ -228,6 +257,19 @@ public class AI : MonoBehaviour
         }
         return moves;
     }
+	List<Move> getKnightMoves(int x, int y){
+		List<Move> moves = new List<Move> ();
+
+		for (int a = -2; a <= 2; a++) {
+			for(int b = -2; b <=2; b++){
+				if(abs (a - b) == 1){
+					if(boardObject.GetComponent<gameScript>().isLegal(pieces.bKNIGHT, x, y, x + a, b + y){
+						Move move = new Move(pieces.bKNIGHT, x, y, x + a, y + b);
+					}
+				}
+			}
+		}
+	}
     List<Move> getMoves(pieces piece, int x, int y)
     {
         List<Move> moves = new List<Move>();
@@ -303,6 +345,37 @@ public class AI : MonoBehaviour
 			}
 		}
 	}
+	List<PieceInfo> getBlackPieceInfo(Board b){
+						List<PieceInfo> returnList = new List<PieceInfo> ();
+						for (int a = 0; a < 8; a++)
+						{
+							for (int c = 0; c < 8; c++)
+							{
+								if (b.isBlack(a, c))
+								{
+									PieceInfo temp = new PieceInfo(b.gameBoard[a, c], a, c);
+									returnList.Add(temp);
+								}
+							}
+						}
+		return returnList;
+	}
+	List<PieceInfo> getWhitePieceInfo(Board b){
+						List<PieceInfo> returnList = new List<PieceInfo> ();
+						for (int a = 0; a < 8; a++)
+						{
+							for (int c = 0; c < 8; c++)
+							{
+								if (!b.isBlack(a, c) && b.gameBoard[a,c] != pieces.EMPTY)
+								{
+									PieceInfo temp = new PieceInfo(b.gameBoard[a, c], a, c);
+									returnList.Add(temp);
+								}
+							}
+						}
+		return returnList;
+	}
+
 
     // Update is called once per frame
     void Update()

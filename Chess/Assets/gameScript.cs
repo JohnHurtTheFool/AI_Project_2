@@ -7,7 +7,10 @@ public enum pieces{wPAWN, wKNIGHT, wBISHOP, wROOK, wQUEEN, wKING,
 public class Board
 {
 
-
+	public void makeMove(Move move){
+		gameBoard[move.endX, move.endY] = gameBoard[move.startX, move.startY];
+		gameBoard [move.startX, move.startY] = pieces.EMPTY;
+	}
 
     public bool isBlack(int x, int y)
     {
@@ -251,7 +254,7 @@ public class gameScript : MonoBehaviour {
 		if (abs (startX - endX) <= 1 && abs (startY - endY) <= 1) {
 			return true;
 		}
-		else if(isWhite(board.gameBoard[startX, startY]){
+		else if(isWhite(board.gameBoard[startX, startY])){
 
 		}
 		return false;
