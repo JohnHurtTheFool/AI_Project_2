@@ -27,7 +27,23 @@ public class Board
 	public bool selected = false;
 	//the actual board that holds all the pieces' positions
 	public pieces[,] gameBoard = new pieces[8,8];
-	//Constructor to initialize the gameBoard
+	
+    //Copy Constructor
+    public Board(Board board)
+    {
+        for(int a = 0; a < 8; a++)
+        {
+            for(int b = 0; b < 8; b++)
+            {
+                gameBoard[a, b] = board.gameBoard[a, b];
+            }
+
+        }
+    }
+    
+    
+    
+    //Constructor to initialize the gameBoard
 	public Board(){
 		for(int a = 0; a < 8; a++){
 			for (int b= 0; b< 8; b++){
